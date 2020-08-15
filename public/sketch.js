@@ -3,6 +3,7 @@ let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPl
 let sliderOn = true;
 let state = 0;
 let backgroundGraphicObjects = [];
+let overVideoPlayer = false;
 //let colors = ['black','white', 'gray'];
 function setup(){
     createCanvas(windowWidth, windowHeight);
@@ -33,9 +34,11 @@ function setup(){
 // myArray[Math.floor(Math.random()*myArray.length)]
 function draw(){
   background('#222831');
-  textSize(50);
-  fill("#393e46");
-  text("Audio Recording Website",10,50);
+  textSize(75);
+  fill("#00adb5");
+  stroke("#393e46");
+  strokeWeight(5);
+  text("Audio Recorder",10,70);
   backgroundGraphic();
   //console.log(state);
   if(state == 2){
@@ -44,24 +47,24 @@ function draw(){
       //fill(colors[Math.floor(Math.random()*colors.length)]);
       ellipseMode(RADIUS);
       fill("#00adb5");
-      ellipse(windowWidth/2,windowHeight/2, vol * 5000, vol * 5000);
+      ellipse(windowWidth/2,windowHeight/2, vol * 4000, vol * 4000);
       
       ellipseMode(CENTER);
       fill("#393e46");
-      ellipse(windowWidth/2,windowHeight/2, vol * 3000, vol * 3000);
+      ellipse(windowWidth/2,windowHeight/2, vol * 4000, vol * 4000);
     }
-  if(state == 3 && soundFile.isPlaying()){
-    // if(videoPlayerSlider.value() != soundFile.currentTime()){
-    //   soundFile.jump(videoPlayerSlider.value());
-    // }
-    videoPlayerSlider.changed(soundFileJump);
-    videoPlayerSlider.value(soundFile.currentTime());
+    if(videoPlayerSlider != null){
+        videoPlayerSlider.changed(function(){soundFile.jump(videoPlayerSlider.value()); overVideoPlayer = false;audioPlayer.html("Pause")});
+        if(overVideoPlayer = false){
+            setTimeout(function () {
+                overVideoPlayer = true;
+            }, 2000);
+        }else{
+            videoPlayerSlider.value(soundFile.currentTime());
+        }
   }
-  console.log(sliderOn);
-}
-function soundFileJump(){
-    soundFile.jump(videoPlayerSlider.value());
-}
+}  
+
 function backgroundGraphic(){
     for(let i=0; i<backgroundGraphicObjects.length;i++){
         backgroundGraphicObjects[i].update();
@@ -220,8 +223,8 @@ function toggleAudio(){
           volumeSlider.style("transition-duration: 0.4s;");
           volumeSlider.style('width', '80px');
           sliderOn = false;
-        }  
-        soundFile.setVolume(volumeSlider.value());
+        }
+        volumeSlider.changed(function(){soundFile.setVolume(volumeSlider.value())});  
     }
     else{
         soundFile.pause();
