@@ -33,6 +33,9 @@ function setup(){
 // myArray[Math.floor(Math.random()*myArray.length)]
 function draw(){
   background('#222831');
+  textSize(50);
+  fill("#393e46");
+  text("Audio Recording Website",10,50);
   backgroundGraphic();
   //console.log(state);
   if(state == 2){
