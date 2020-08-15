@@ -1,0 +1,17 @@
+body{
+    margin:0;
+    padding: 0;
+    overflow: hidden;
+
+}
+canvas{
+    margin:auto;
+}
+input.slider::-moz-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
