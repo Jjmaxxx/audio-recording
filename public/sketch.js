@@ -1,5 +1,5 @@
 let btnSize = 10;
-let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits;
+let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits,curTime;
 let sliderOn = true;
 let state = 0;
 let backgroundGraphicObjects = [];
@@ -8,8 +8,8 @@ let overVideoPlayer = false;
 
 function setup(){
     createCanvas(windowWidth, windowHeight);
-    credits = createA('https://github.com/Jjmaxxx/', 'Created By: Justin Lee');
-    credits.position(windowWidth - 305,windowHeight- 29);
+    credits = createA('https://github.com/Jjmaxxx/', 'Created By Justin Lee');
+    credits.position(windowWidth - 295,windowHeight- 29);
     credits.style('color:#00adb5');
     credits.style("font-size:20pt");
     credits.style("width:500px");
@@ -41,7 +41,7 @@ function setup(){
     mic = new p5.AudioIn();
     recorder = new p5.SoundRecorder();
     soundFile = new p5.SoundFile();
-    for(let i=0; i<50; i++){
+    for(let i=0; i<75; i++){
         backgroundGraphicObjects.push(new Circle());
     }
 }
@@ -56,22 +56,35 @@ function draw(){
       //fill(colors[Math.floor(Math.random()*colors.length)]);
       ellipseMode(RADIUS);
       fill("#00adb5");
-      ellipse(windowWidth/2,windowHeight/2, vol * 4000, vol * 4000);
+      ellipse(windowWidth/2,windowHeight/2, vol * 2000, vol * 2000);
       
       ellipseMode(CENTER);
       fill("#393e46");
-      ellipse(windowWidth/2,windowHeight/2, vol * 4000, vol * 4000);
+      ellipse(windowWidth/2,windowHeight/2, vol * 2000, vol * 2000);
     }
     if(videoPlayerSlider != null){
-        videoPlayerSlider.changed(function(){soundFile.jump(videoPlayerSlider.value()); overVideoPlayer = false;audioPlayer.html("Pause")});
-        if(overVideoPlayer = false){
-            setTimeout(function () {
-                overVideoPlayer = true;
-            }, 2000);
+        if(!soundFile.isPlaying()){
+            videoPlayerSlider.input(function(){soundFile.jump(videoPlayerSlider.value());});
         }else{
-            videoPlayerSlider.value(soundFile.currentTime());
+            if(overVideoPlayer == true){
+                videoPlayerSlider.mouseClicked(function(){soundFile.stop();audioPlayer.html('Play');videoPlayerSlider.changed(function(){soundFile.jump(videoPlayerSlider.value()); overVideoPlayer = false;curTime = soundFile.currentTime;});});
+                overVideoPlayer = false;
+            }else{
+                setTimeout(function(){
+                    overVideoPlayer = true;
+                }, 5000);
+            }
         }
-  }
+       // else{
+            // if(overVideoPlayer = false){
+                // setTimeout(function () {
+                //     overVideoPlayer = true;
+                // }, 1000);
+            // }else{
+                videoPlayerSlider.value(soundFile.currentTime());
+            //}
+        //}
+    }
 }  
 
 function backgroundGraphic(){
@@ -114,7 +127,7 @@ class Circle{
     collide(){
         for(let i=0;i< backgroundGraphicObjects.length;i++){
             if(this.quadrant == backgroundGraphicObjects[i].quadrant ){
-                if(sqrt(Math.pow(backgroundGraphicObjects[i].x - this.x,2) + Math.pow(backgroundGraphicObjects[i].y - this.y,2)) <= 125){
+                if(sqrt(Math.pow(backgroundGraphicObjects[i].x - this.x,2) + Math.pow(backgroundGraphicObjects[i].y - this.y,2)) <= 100){
                     stroke("#393e46");
                     strokeWeight(0.7);
                     line(this.x, this.y, backgroundGraphicObjects[i].x, backgroundGraphicObjects[i].y);
@@ -125,22 +138,25 @@ class Circle{
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-    button.position(windowWidth/2 - 150, windowHeight/2 - 24);
     title.position(10,0);
     credits.position(windowWidth - 305,windowHeight- 29);
-    if(state == 2){
+    if(state == 0 || state == 1){
+        button.position(windowWidth/2 - 130, windowHeight/2 - 24);
+    }
+    else if(state == 2){
         button.position(windowWidth/2 - 123,windowHeight - 60);
     }
     else if(state == 3){
         if(volumeSlider != null){
             volumeSlider.position(windowWidth/2 + 320,windowHeight/2 + 200);
         }
+        button.position(windowWidth/2 - 205, windowHeight/2 - 24);
         audioPlayer.position(windowWidth/2 - 120, windowHeight/2 + 50);
         dontDownload.position(windowWidth/2 + 20, windowHeight/2 - 24);
         if(videoPlayerSlider != null){
             videoPlayerSlider.position(windowWidth/2 - 400,windowHeight/2 + 150);
         }
-        console.log('a');
+        //console.log('a');
     }
 }
 function toggleRecording(){
@@ -160,7 +176,7 @@ function toggleRecording(){
     }else if(state == 2){
         recorder.stop();
         button.center();
-        console.log(soundFile.duration());
+        //console.log(soundFile.duration());
         button.style("width:200px;");
 
         audioPlayer = createButton("Play");
@@ -238,11 +254,11 @@ function recordAgain(){
     
 // }
 function toggleAudio(){
-    audioPlayer.html('Play');
     if(!soundFile.isPlaying()){
         soundFile.play();
         audioPlayer.html('Pause');
         if(sliderOn){
+          audioPlayer.html('Play');
           videoPlayerSlider = createSlider(0, Math.floor(soundFile.duration()), 0, 0.01);
           videoPlayerSlider.style('background-color: #00adb5');
           videoPlayerSlider.style('width', '800px');
