@@ -1,15 +1,29 @@
 let btnSize = 10;
-let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider;
+let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits;
 let sliderOn = true;
 let state = 0;
 let backgroundGraphicObjects = [];
 let overVideoPlayer = false;
 //let colors = ['black','white', 'gray'];
+
 function setup(){
     createCanvas(windowWidth, windowHeight);
+    credits = createA('https://github.com/Jjmaxxx/', 'Created By: Justin Lee');
+    credits.position(windowWidth - 305,windowHeight- 29);
+    credits.style('color:#00adb5');
+    credits.style("font-size:20pt");
+    credits.style("width:500px");
+    credits.style("-webkit-text-stroke: 0.7px #393e46;");
+    credits.style("font-family:verdana");
     button = createButton("Record Mic Input");
     button.center();
-    //button.position(windowWidth/2,windowHeight/2 - 10);
+    title = createDiv("Audio Recorder");
+    title.position(10,0);
+    title.style('z-index:2');
+    title.style('color:#00adb5');
+    title.style("-webkit-text-stroke: 3.3px #393e46;");
+    title.style("font-family:verdana");
+    title.style("font-size:70pt");
     button.mousePressed(toggleRecording);
     button.style("background-color: #00adb5");
     button.style("border: none");
@@ -34,11 +48,6 @@ function setup(){
 // myArray[Math.floor(Math.random()*myArray.length)]
 function draw(){
   background('#222831');
-  textSize(75);
-  fill("#00adb5");
-  stroke("#393e46");
-  strokeWeight(5);
-  text("Audio Recorder",10,70);
   backgroundGraphic();
   //console.log(state);
   if(state == 2){
@@ -68,6 +77,7 @@ function draw(){
 function backgroundGraphic(){
     for(let i=0; i<backgroundGraphicObjects.length;i++){
         backgroundGraphicObjects[i].update();
+        backgroundGraphicObjects[i].collide();
     }
 }
 class Circle{
@@ -76,25 +86,48 @@ class Circle{
         this.y = random(0, windowHeight);
         this.xDir = random(-100,100);
         this.yDir = random(-100,100);
+        this.quadrant = 0;
     }
     update(){
         fill("#393e46");
         noStroke();
         noSmooth();
         ellipse(this.x,this.y,5);
-        this.x += this.xDir/1000;
-        this.y += this.yDir/1000;
+        this.x += this.xDir/950;
+        this.y += this.yDir/950;
         if(this.x < 0 || this.x > windowWidth){
             this.xDir *= -1;
         }
         if(this.y< 0 || this.y > windowHeight){
             this.yDir *= -1;
         }
+        if(this.x < windowWidth/2 && this.y > windowHeight/2){
+            this.quadrant = 1;
+        }else if(this.x > windowWidth/2 && this.y > windowHeight/2){
+            this.quadrant = 2;
+        }else if(this.x < windowWidth/2 && this.y < windowHeight/2){
+            this.quadrant = 3;;
+        }else if(this.x > windowWidth/2 && this.y < windowHeight/2){
+            this.quadrant = 4;
+        }
+    }
+    collide(){
+        for(let i=0;i< backgroundGraphicObjects.length;i++){
+            if(this.quadrant == backgroundGraphicObjects[i].quadrant ){
+                if(sqrt(Math.pow(backgroundGraphicObjects[i].x - this.x,2) + Math.pow(backgroundGraphicObjects[i].y - this.y,2)) <= 125){
+                    stroke("#393e46");
+                    strokeWeight(0.7);
+                    line(this.x, this.y, backgroundGraphicObjects[i].x, backgroundGraphicObjects[i].y);
+                }
+            }
+        }
     }
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
-    button.position(windowWidth/2 - 200, windowHeight/2 - 24);
+    button.position(windowWidth/2 - 150, windowHeight/2 - 24);
+    title.position(10,0);
+    credits.position(windowWidth - 305,windowHeight- 29);
     if(state == 2){
         button.position(windowWidth/2 - 123,windowHeight - 60);
     }
