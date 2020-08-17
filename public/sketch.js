@@ -1,5 +1,6 @@
 let btnSize = 10;
 let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits,curTime;
+let isSoundPlaying = false;
 let sliderOn = true;
 let state = 0;
 let backgroundGraphicObjects = [];
@@ -63,27 +64,12 @@ function draw(){
       ellipse(windowWidth/2,windowHeight/2, vol * 2000, vol * 2000);
     }
     if(videoPlayerSlider != null){
-        if(!soundFile.isPlaying()){
+        if(!isSoundPlaying){
             videoPlayerSlider.input(function(){soundFile.jump(videoPlayerSlider.value());});
         }else{
-            if(overVideoPlayer == true){
-                videoPlayerSlider.mouseClicked(function(){soundFile.stop();audioPlayer.html('Play');videoPlayerSlider.changed(function(){soundFile.jump(videoPlayerSlider.value()); overVideoPlayer = false;curTime = soundFile.currentTime;});});
-                overVideoPlayer = false;
-            }else{
-                setTimeout(function(){
-                    overVideoPlayer = true;
-                }, 5000);
-            }
+            videoPlayerSlider.input(function(){videoPlayerSlider.changed(function(){soundFile.jump(videoPlayerSlider.value());});});
         }
-       // else{
-            // if(overVideoPlayer = false){
-                // setTimeout(function () {
-                //     overVideoPlayer = true;
-                // }, 1000);
-            // }else{
-                videoPlayerSlider.value(soundFile.currentTime());
-            //}
-        //}
+        videoPlayerSlider.value(soundFile.currentTime());
     }
 }  
 
@@ -254,7 +240,7 @@ function recordAgain(){
     
 // }
 function toggleAudio(){
-    if(!soundFile.isPlaying()){
+    if(!isSoundPlaying){
         soundFile.play();
         audioPlayer.html('Pause');
         if(sliderOn){
@@ -274,15 +260,13 @@ function toggleAudio(){
           sliderOn = false;
         }
         volumeSlider.changed(function(){soundFile.setVolume(volumeSlider.value())});  
+        isSoundPlaying = true;
     }
     else{
         soundFile.pause();
         audioPlayer.html('Play');
+        isSoundPlaying = false;
         //soundFile.setVolume(volumeSlider.value());
     }
-  soundFile.onended(changeText);
-}
-function changeText(){
-    audioPlayer.html('Play');
-    //console.log('a');
+  soundFile.onended(function(){audioPlayer.html('Play');});
 }
