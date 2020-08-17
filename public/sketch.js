@@ -42,7 +42,7 @@ function setup(){
     mic = new p5.AudioIn();
     recorder = new p5.SoundRecorder();
     soundFile = new p5.SoundFile();
-    for(let i=0; i<75; i++){
+    for(let i=0; i<100; i++){
         backgroundGraphicObjects.push(new Circle());
     }
 }
