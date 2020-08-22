@@ -1,3 +1,7 @@
+@font-face{
+    font-family: Manrope;
+    src:url(Manrope.otf);
+}
 body{
     margin:0;
     padding: 0;

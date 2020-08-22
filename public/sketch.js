@@ -1,5 +1,5 @@
 let btnSize = 10;
-let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits,curTime;
+let mic,recorder,soundFile,volumeSlider,button,audioPlayer,dontDownload, videoPlayerSlider,title,credits,curTime,manrope;
 let isSoundPlaying = false;
 let sliderOn = true;
 let state = 0;
@@ -7,6 +7,9 @@ let backgroundGraphicObjects = [];
 let overVideoPlayer = false;
 //let colors = ['black','white', 'gray'];
 
+// function preload(){
+//     manrope = loadFont("Manrope");
+// }
 function setup(){
     createCanvas(windowWidth, windowHeight);
     credits = createA('https://github.com/Jjmaxxx/', 'Created By Justin Lee');
@@ -23,7 +26,7 @@ function setup(){
     title.style('z-index:2');
     title.style('color:#00adb5');
     title.style("-webkit-text-stroke: 3.3px #393e46;");
-    title.style("font-family:verdana");
+    title.style("font-family:Manrope");
     title.style("font-size:70pt");
     button.mousePressed(toggleRecording);
     button.style("background-color: #00adb5");
@@ -113,7 +116,7 @@ class Circle{
     collide(){
         for(let i=0;i< backgroundGraphicObjects.length;i++){
             if(this.quadrant == backgroundGraphicObjects[i].quadrant ){
-                if(sqrt(Math.pow(backgroundGraphicObjects[i].x - this.x,2) + Math.pow(backgroundGraphicObjects[i].y - this.y,2)) <= 100){
+                if(sqrt(Math.pow(backgroundGraphicObjects[i].x - this.x,2) + Math.pow(backgroundGraphicObjects[i].y - this.y,2)) <= 90){
                     stroke("#393e46");
                     strokeWeight(0.7);
                     line(this.x, this.y, backgroundGraphicObjects[i].x, backgroundGraphicObjects[i].y);
